@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    float yaw = 0;
-    float pitch = 0;
+    public float yaw = 0;
+    public float pitch = 0;
     const float roll = 0;
     public float MoveSpeed = 1.0f;
     public float TurnSpeed = 3.0f;
@@ -24,8 +24,14 @@ public class CameraController : MonoBehaviour
         SelectTarget();
     }
     private void FixedUpdate() {
-        Move();
-        FollowTarget();
+        if(target != null) {
+            FollowTarget();
+            
+            // transform.rotation = Quaternion.Euler(pitch, yaw, roll);
+        }
+        else {
+            Move();
+        }
     }
     private void Move() {
         if (Input.GetKey(KeyCode.W))
@@ -56,9 +62,9 @@ public class CameraController : MonoBehaviour
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(mouseRay, out hit)) {
-                target = hit.transform;
-                if (target.CompareTag("Selectable")) {
-                    Debug.Log(target.name);
+                    target = hit.transform;
+                if (!target.CompareTag("Selectable")) {
+                    target = null;
                 }
             }
         }
@@ -71,14 +77,15 @@ public class CameraController : MonoBehaviour
         }
     }
     void FollowTarget() {
-        if (target != null) {
-            Vector3 TargetToCamDir = transform.position - target.position;
-            Vector3 offset = TargetToCamDir.normalized * currDistanceFromTarget;
-            Vector3 desiredPosition = target.position + offset;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, SmoothSpeed);
-            transform.position = smoothedPosition;
-            transform.LookAt(target);
-        }
+        Vector3 TargetToCamDir = transform.position - target.position;
+        Vector3 offset = TargetToCamDir.normalized * currDistanceFromTarget;
+        Vector3 desiredPosition = target.position + offset;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, SmoothSpeed);
+        transform.position = smoothedPosition;
+        transform.LookAt(target);
+       
+        pitch = transform.localEulerAngles.x;
+        yaw = transform.localEulerAngles.y;
     }
 
 }

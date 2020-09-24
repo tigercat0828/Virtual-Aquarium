@@ -615,7 +615,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 990b62cab2cbe1248a83b41d80b2bfcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Rank: 0
   MaxHealth: 100
-  MoveSpeed: 2
-  currDirection: {x: 0, y: 0, z: 0}
-  currHealth: 0
+  MaxHungry: 0
+  MaxAge: 0
+  WanderSpeed: 1
+  currState: 0
+  currHealth: 100
+  currHungry: 0
+  currAge: 0
+  currMoveDirection: {x: 0, y: 0, z: 0}

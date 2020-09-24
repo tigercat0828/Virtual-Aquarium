@@ -13,8 +13,8 @@ public class Spawner : MonoBehaviour {
     public void SpawnCreature() {
         for (int i = 0; i < SpawnNum; i++) {
             Vector3 randomPosition = transform.position + new Vector3(Random.Range(0, SpawnRadius), 0, Random.Range(0, SpawnRadius));
-            Vector3 randomForward = new Vector3(0,Random.Range(0,360),0);
-            Instantiate(spawnPrefab, randomPosition, Quaternion.Euler(randomForward));
+            Vector3 randRotation = Utility.GetRandomUnitVector();
+            Instantiate(spawnPrefab, randomPosition, Quaternion.Euler(randRotation));
         }
     }
 }
