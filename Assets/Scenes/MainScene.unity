@@ -1554,8 +1554,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9eedc7d9ca2dc4a8d310dc96f525f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
-  turnSpeed: 3
+  MoveSpeed: 1
+  TurnSpeed: 3
+  target: {fileID: 0}
+  SmoothSpeed: 0.125
+  MinDistanceFromTarget: 5
 --- !u!1 &969873721
 GameObject:
   m_ObjectHideFlags: 0
