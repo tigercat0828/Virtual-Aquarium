@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CreatureDisplayer : MonoBehaviour {
-    public Transform Selected;
+    public Transform selectedTransform;
+    public IInfoDisplayable currCreatureInfo;
     public Text RankText;
     public Text NameText;
     public Text StateText;
@@ -12,32 +14,41 @@ public class CreatureDisplayer : MonoBehaviour {
     public Text HungryText;
     public Text AgeText;
     private void Update() {
-        // select target()
+        SelectTarget();
+       if(currCreatureInfo != null) {
+            DisplayCreatureData(currCreatureInfo);
+        }
+        else {
+            DisplayDefaultText();
+        }
+       
+    }
+    public void SelectTarget() {
         if (Input.GetMouseButtonDown(0)) {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(mouseRay, out hit)) {
-                Selected = hit.transform;
-                if (Selected != null) {
-                    if (Selected.CompareTag("Selectable")) {
-                        Debug.Log(Selected.name);
-                        Creature creature = Selected.GetComponent<Creature>();
-                        DisplayCreatureData(creature);
-                    }
-                    else {
-                        DisplayDefaultText();
+                selectedTransform = hit.transform;
+                if (selectedTransform != null) {
+                    if (selectedTransform.CompareTag("Selectable")) {
+                        currCreatureInfo = selectedTransform.GetComponent<IInfoDisplayable>();
                     }
                 }
-            }   
+            }
+        }
+        if (Input.GetMouseButton(1)) {
+            selectedTransform = null;
+            currCreatureInfo = null;
         }
     }
-    public void DisplayCreatureData(Creature creature) {
-        RankText.text = creature.Rank.ToString();
-        NameText.text = creature.name;
-        StateText.text = creature.currState.ToString();
-        HealthText.text = creature.currHealth.ToString();
-        HungryText.text = creature.currHungry.ToString();
-        AgeText.text = creature.currAge.ToString();
+    public void DisplayCreatureData(IInfoDisplayable infoDisplayable) {
+        CreatureInfo info = infoDisplayable.GetCreatureInfo();
+        RankText.text = info.rank.ToString();
+        NameText.text = info.name;
+        StateText.text = info.currState.ToString();
+        HealthText.text = info.currHealth.ToString();
+        HungryText.text = info.currHungry.ToString();
+        AgeText.text = ((int)(info.currAge)).ToString();
     }
     public void DisplayDefaultText() {
         RankText.text = "-";

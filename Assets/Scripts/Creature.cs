@@ -2,14 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Video;
 
-public class Creature : MonoBehaviour {
 
-    public enum State {
-        Wander, Die
+
+public class Creature : MonoBehaviour, IInfoDisplayable {
+
+    public enum ActionState {
+        Wander, Search , Sprint, Die
     }
+
     // Basic Data
     public int Rank;
     public float MaxHealth;
@@ -17,7 +21,7 @@ public class Creature : MonoBehaviour {
     public float MaxAge;
     public float WanderSpeed;
     // Current Data
-    public State currState;
+    public ActionState currState;
     public float currHealth;
     public float currHungry;
     public float currAge;
@@ -26,19 +30,25 @@ public class Creature : MonoBehaviour {
     public virtual void Start() {
         Rank = 0;
         currHealth = MaxHealth;
-        currState = State.Wander;
+        currState = ActionState.Wander;
         currHungry = MaxHungry;
         currAge = 15;
-        
         currMoveDirection = transform.forward;
     }
     public virtual void Update() {
         // wander move
-        if (currState == State.Wander) {
+        if (currState == ActionState.Wander) {
             transform.position += currMoveDirection * WanderSpeed * Time.deltaTime;
         }
+
         // increase age 
         currAge += Time.deltaTime;
     }
+    public CreatureInfo GetCreatureInfo() {
+        CreatureInfo states = new CreatureInfo(Rank, transform.name ,currState, currHealth, currHungry, currAge);
+        return states;
+    }
+    
+
 
 }

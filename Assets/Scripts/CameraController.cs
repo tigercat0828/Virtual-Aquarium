@@ -6,86 +6,101 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public float yaw = 0;
-    public float pitch = 0;
-    const float roll = 0;
-    public float MoveSpeed = 1.0f;
-    public float TurnSpeed = 3.0f;
+    private float pitch;
+    private float yaw;
 
-    public Transform target;
-    public float SmoothSpeed = 0.125f;
-    public float MinDistanceFromTarget;
-    private float currDistanceFromTarget;
-
+    public float DistanceFromTarget = 3;
+    public float MoveSpeed;
+    public float TurnSpeed;
+    
+    private Transform focusTarget;
+    private bool hasFocusTarget;
+    [SerializeField]
+    private string targetName;
     private void Start() {
-        currDistanceFromTarget = MinDistanceFromTarget;
+        Init();
     }
     private void Update() {
-        SelectTarget();
-    }
-    private void FixedUpdate() {
-        if(target != null) {
+        HandleMove();
+        HandleTurn();
+        LockTarget();
+        if (hasFocusTarget) {
             FollowTarget();
-            
-            // transform.rotation = Quaternion.Euler(pitch, yaw, roll);
         }
-        else {
-            Move();
+        
+    }
+    private void Init() {
+        pitch = transform.localEulerAngles.x;
+        yaw = transform.localEulerAngles.y;
+        
+        Cursor.lockState = CursorLockMode.Locked;
+
+        focusTarget = null;
+        hasFocusTarget = false;
+        targetName = "-";
+    }
+    private void HandleMove() {
+        float moveSpeed = MoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.W)) {
+            transform.position += new Vector3(transform.forward.x, 0, transform.forward.z) * moveSpeed;
+        }
+        if (Input.GetKey(KeyCode.S)) {
+            transform.position -= new Vector3(transform.forward.x, 0, transform.forward.z) * moveSpeed;
+        }
+        if (Input.GetKey(KeyCode.A)) {
+            transform.position -= transform.right * moveSpeed;
+        }
+        if (Input.GetKey(KeyCode.D)) {
+            transform.position += transform.right * moveSpeed;
+        }
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            transform.position += Vector3.down * moveSpeed;
+        }
+        if (Input.GetKey(KeyCode.Space)) {
+            transform.position += Vector3.up * moveSpeed;
         }
     }
-    private void Move() {
-        if (Input.GetKey(KeyCode.W))
-            transform.position += Vector3.ClampMagnitude(transform.forward, MoveSpeed);
-        else if (Input.GetKey(KeyCode.S))
-            transform.position -= Vector3.ClampMagnitude(transform.forward, MoveSpeed);
-
-        // Move left or right
-        if (Input.GetKey(KeyCode.A))
-            transform.position -= Vector3.ClampMagnitude(transform.right, MoveSpeed);
-        else if (Input.GetKey(KeyCode.D))
-            transform.position += Vector3.ClampMagnitude(transform.right, MoveSpeed);
-
-        // Move up or down
-        if (Input.GetKey(KeyCode.Space))
-            transform.position += new Vector3(0, MoveSpeed, 0);
-        else if (Input.GetKey(KeyCode.LeftShift))
-            transform.position -= new Vector3(0, MoveSpeed, 0);
-
-        // Rotate
-        pitch -= Input.GetAxis("Mouse Y") * TurnSpeed;
-        pitch = Mathf.Clamp(pitch, -90, 90);
-        yaw += Input.GetAxis("Mouse X") * TurnSpeed;
-        transform.rotation = Quaternion.Euler(pitch, yaw, roll);
+    private void HandleTurn() {
+        pitch -= Input.GetAxis("Mouse Y");
+        pitch = Mathf.Clamp(pitch, -89f, 89f);
+        yaw += Input.GetAxis("Mouse X");
+        transform.rotation = Quaternion.Euler(pitch, yaw, 0);
     }
-    void SelectTarget() {
+    private void LockTarget() {
         if (Input.GetMouseButtonDown(0)) {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(mouseRay, out hit)) {
-                    target = hit.transform;
-                if (!target.CompareTag("Selectable")) {
-                    target = null;
+                focusTarget = hit.transform;
+                if (focusTarget.CompareTag("Selectable")) {
+                    hasFocusTarget = true;
+                }
+                else {
+                    hasFocusTarget = false;
+                    focusTarget = null;
                 }
             }
         }
         if (Input.GetMouseButtonDown(1)) {
-            target = null;
+            hasFocusTarget = false;
+            focusTarget = null;
         }
-        currDistanceFromTarget -= Input.mouseScrollDelta.y;
-        if(currDistanceFromTarget < MinDistanceFromTarget) {
-            currDistanceFromTarget = MinDistanceFromTarget;
-        }
-    }
-    void FollowTarget() {
-        Vector3 TargetToCamDir = transform.position - target.position;
-        Vector3 offset = TargetToCamDir.normalized * currDistanceFromTarget;
-        Vector3 desiredPosition = target.position + offset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, SmoothSpeed);
-        transform.position = smoothedPosition;
-        transform.LookAt(target);
-       
-        pitch = transform.localEulerAngles.x;
-        yaw = transform.localEulerAngles.y;
+
+        DebugDisplayTargetName();
     }
 
+    private void FollowTarget() {
+        Vector3 toTargetDir = focusTarget.transform.position - transform.position;
+        Vector3 fixedOffset = toTargetDir.normalized * DistanceFromTarget;
+        transform.position = focusTarget.position - fixedOffset;
+    }
+    private void DebugDisplayTargetName() {
+        if (focusTarget != null) {
+            targetName = focusTarget.name;
+        }
+        else {
+            targetName = "-";
+        }
+    }
+    
 }

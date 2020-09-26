@@ -10,5 +10,5 @@ public static class Utility {
         Vector3 randUnit = new Vector3(randX, randY, randZ);
         return randUnit;
     }
-    
+
 }
