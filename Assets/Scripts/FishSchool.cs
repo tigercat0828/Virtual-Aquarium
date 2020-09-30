@@ -25,9 +25,6 @@ public class FishSchool: MonoBehaviour {
     public float WeightAvoid;
     public float WeightCohesion;
 
-    
-
-
     public void SpawnSchool(int fishCount, string flockName, float neighborRadius, float avoidRaius,
                                float weightAlign, float weightAvoid, float wightCohesion) {
         DifferenceRate = 1 - DifferenceRate;
