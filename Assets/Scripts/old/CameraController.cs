@@ -33,7 +33,7 @@ public class CameraController : MonoBehaviour
         pitch = transform.localEulerAngles.x;
         yaw = transform.localEulerAngles.y;
         
-        Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.lockState = CursorLockMode.Locked;
 
         focusTarget = null;
         hasFocusTarget = false;

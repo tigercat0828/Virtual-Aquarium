@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Utility {
+
+
     public static Vector3 GetRandomUnitVector() {
         float randX = Random.Range(0f, 360f);
         float randY = Random.Range(0f, 360f);
