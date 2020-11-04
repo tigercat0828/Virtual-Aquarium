@@ -4,25 +4,34 @@ using System.Data;
 using UnityEditor.UI;
 using UnityEngine;
 using UnityEditor;
-
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class Agent : MonoBehaviour {
 
     public enum AgentState {
         Wander, Spirit, Exit
     }
-    public Vector3 accelerate;
-    public Vector3 velocity;
+    
+
+    
     public float health;
-    public Transform target;
-    public Transform enemy;
+    public float ViewRange;
     public float WanderSpeed;
     public float SprintSpeed;
-    public float ViewRange;
+
+
+    public Vector3 accelerate;
+    public Vector3 velocity;
+    public Transform target;
+    public Transform enemy;
     public AgentState state;
+
+    public int eaten = 0;
     // Start is called before the first frame update
 
-
+    private float _worldSize = Manager.WorldSize / 2f * 0.98f;
+    private float _worldDepth = Manager.WorldDepth * 0.98f;
+   
     void Awake() {
 
     }
@@ -30,12 +39,14 @@ public class Agent : MonoBehaviour {
 
         WanderSpeed = Manager.AgentWanderSpeed;
         ViewRange = Manager.AgentViewRange;
+        health = (0.15f * WanderSpeed * WanderSpeed + 1.15f * ViewRange) * Manager.StartLifespan;
         state = AgentState.Wander;
     }
 
     void Update() {
         //FixHeight();
         ObserveEnviroment();
+        health -= (0.15f * WanderSpeed * WanderSpeed + 1.15f * ViewRange) * Time.deltaTime;
         // Wander and Search for food to survive in the arena !!
         if (state == AgentState.Wander) {
             if (target) {
@@ -93,44 +104,34 @@ public class Agent : MonoBehaviour {
             }
 
         }
+
         // check whether I am exiting the arena
-        if (Vector3.Distance(transform.position, Manager.WorldCenter) > Manager.WorldSize / 2f) {
+        if (Mathf.Abs(transform.position.x) > _worldSize) {
             state = AgentState.Exit;
         }
+        else if (Mathf.Abs(transform.position.z) > _worldSize) {
+            state = AgentState.Exit;
+        }
+        else if (transform.position.y < 5f) {
+            state = AgentState.Exit;
+        }
+        else if (transform.position.y > _worldDepth) {
+            state = AgentState.Exit;
+        }
+        else {
+            // I am in the Arena
+            state = AgentState.Wander;
+        }
+
     }
     void GobackToArena() {
-        Vector3 desired = Vector3.ClampMagnitude(Manager.WorldCenter - transform.position,  WanderSpeed);
+        Vector3 desired = Vector3.ClampMagnitude(Manager.WorldCenter - transform.position, WanderSpeed);
         Vector3 steerForce = Manager.Limit(desired - velocity, Manager.AgentTurnForce);
         accelerate = steerForce;    //扭力
-        velocity = velocity.normalized * WanderSpeed;
         velocity += accelerate;
+        velocity = Manager.Limit(velocity, WanderSpeed);
         transform.position += velocity * Time.deltaTime;
         transform.forward = velocity;
     }
 
-    void FixHeight() {
-        if (transform.position.y > 2.0f) {
-            transform.position -= new Vector3(0, 0.1f, 0);
-        }
-        else if (transform.position.y < 2.0f) {
-            transform.position += new Vector3(0, 0.1f, 0);
-        }
-    }
-
 }
-
-
-
-
-/*
-// --------------------- global eye view;
-GameObject[] foodList = GameObject.FindGameObjectsWithTag("Food");
-float minDist = float.MaxValue;
-foreach (var food in foodList) {
-    float dist = Vector3.Distance(transform.position, food.transform.position);
-    if (dist < minDist) {
-        target = food.transform;
-        minDist = dist;
-    }
-}
- */

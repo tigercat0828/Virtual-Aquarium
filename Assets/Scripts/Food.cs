@@ -7,11 +7,11 @@ public class Food : MonoBehaviour {
     // Start is called before the first frame update
     public float energy;
 
-     void Awake() {
-        
-     }
-    void Start() {
+    void Awake() {
 
+    }
+    void Start() {
+        energy = Manager.FoodEnergy;
     }
 
     // Update is called once per frame
@@ -21,7 +21,11 @@ public class Food : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-           
+        if (other.transform.tag == "Agent") {
+            other.gameObject.GetComponent<Agent>().eaten++;
+
+            print("Food got eaten");
+        }
         Destroy(gameObject);
     }
 }
