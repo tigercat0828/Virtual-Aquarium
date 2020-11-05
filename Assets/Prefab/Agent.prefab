@@ -48,12 +48,16 @@ MonoBehaviour:
   ViewRange: 0
   WanderSpeed: 0
   SprintSpeed: 0
+  breedTimer: 0
+  breedCooldown: 0
+  isAbleToBreed: 0
+  MaxHealth: 0
   accelerate: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
   enemy: {fileID: 0}
   state: 0
-  eaten: 0
+  spawner: {fileID: 0}
 --- !u!1 &7440427840391014333
 GameObject:
   m_ObjectHideFlags: 0
@@ -71,7 +75,7 @@ GameObject:
   - component: {fileID: 7440427840391014324}
   m_Layer: 0
   m_Name: Mesh
-  m_TagString: Untagged
+  m_TagString: Agent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

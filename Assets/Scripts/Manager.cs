@@ -9,24 +9,28 @@ public static class Manager {
     public static Vector3 WorldCenter = new Vector3(0, WorldDepth /2f, 0);
 
 
-    //FoodW
+    //Food
     public static float SpawnFoodCoolDown = 1f;
+    public static int SpawnFoodNum = 10;
     public static int MaxStartFoodNum = 200;
-    public static float FoodEnergy = 100f;
+    public static float FoodEnergy = 500f;
 
 
     // life 
     public static float StartLifespan = 60f;
     // Agent
-    public static int StartAgentNum = 10;
+    public static int StartAgentNum = 30;
     public static float AgentWanderSpeed = 20f;
-    public static float AgentSprintSpeed = 5f;
+    public static float AgentSprintSpeed = 40f;
+    public static float AgentBreedCooldown = StartLifespan * 0.7f;
     public static float AgentTurnForce= 0.5f;
     public static float AgentViewRange = 30f;
-    public static float AgentDiverseRate = 0.3f;
-    // Predator
-    public static float PredatorWanderSpeed = 3f;
+    public static float AgentDiverseRate = 0.1f;
+    public static float AgentMutationRate = 0.01f;
+   // Predator
+    public static float PredatorWanderSpeed = 30f;
     public static float PredatorSprintSpeed = 5f;
+    public static float PredatorViewRange = 45f;
 
     // Utility Function
     public static Vector3 RandomWorldPosition() {

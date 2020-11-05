@@ -21,11 +21,10 @@ public class Food : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        if (other.transform.tag == "Agent") {
-            other.gameObject.GetComponent<Agent>().eaten++;
-
-            print("Food got eaten");
+        if (other.gameObject.tag == "Agent") {
+            other.gameObject.GetComponentInParent<Agent>().EatFood(energy);
         }
+
         Destroy(gameObject);
     }
 }

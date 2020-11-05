@@ -35,10 +35,22 @@ public class GridShower : MonoBehaviour
         Vector3 b = new Vector3(WorldSize / 2f, WaterLevel, -WorldSize / 2f);
         Vector3 c = new Vector3(WorldSize / 2f, WaterLevel, WorldSize / 2f);
         Vector3 d = new Vector3(-WorldSize / 2f, WaterLevel, WorldSize / 2f);
+        Vector3 e = new Vector3(-WorldSize / 2f, 5, -WorldSize / 2f);
+        Vector3 f = new Vector3(WorldSize / 2f, 5, -WorldSize / 2f);
+        Vector3 g = new Vector3(WorldSize / 2f, 5, WorldSize / 2f);
+        Vector3 h = new Vector3(-WorldSize / 2f, 5, WorldSize / 2f);
         Debug.DrawLine(a, b, Color.cyan);
         Debug.DrawLine(b, c, Color.cyan);
         Debug.DrawLine(c, d, Color.cyan);
         Debug.DrawLine(d, a, Color.cyan);
+        Debug.DrawLine(e, f, Color.cyan);
+        Debug.DrawLine(f, g, Color.cyan);
+        Debug.DrawLine(g, h, Color.cyan);
+        Debug.DrawLine(h, e, Color.cyan);
+        Debug.DrawLine(e, a, Color.cyan);
+        Debug.DrawLine(f, b, Color.cyan);
+        Debug.DrawLine(g, c, Color.cyan);
+        Debug.DrawLine(h, d, Color.cyan);
         // DrawGrid
         // X-line
         for (int i = 0; i <= Segments; i++) {

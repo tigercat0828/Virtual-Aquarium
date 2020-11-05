@@ -24,7 +24,7 @@ public class FoodSpawner : MonoBehaviour
         GameObject[] foodList = GameObject.FindGameObjectsWithTag("Food");
         if (foodList.Length < Manager.MaxStartFoodNum) {
             if (SpawnFoodTimer >= SpawnFoodCooldown) {
-                SpawnFood();
+                SpawnBatchFood();
                 SpawnFoodTimer = 0f;
                 print("food spawn");
             }
@@ -38,11 +38,16 @@ public class FoodSpawner : MonoBehaviour
         }
     }
     void SpawnFood() {
-        
+
         Vector3 pos = Manager.RandomWorldPosition();
         Food food = Instantiate(FoodPrefab, pos, Quaternion.identity, transform) as Food;
-    
 
     }
-
+    void SpawnBatchFood() {
+        for (int i = 0; i < Manager.SpawnFoodNum; i++) {
+            Vector3 pos = Manager.RandomWorldPosition();
+            Food food = Instantiate(FoodPrefab, pos, Quaternion.identity, transform) as Food;
+        }
+    }
+    
 }
